@@ -1,0 +1,78 @@
+Mustafa Taner, 315CB, Tema 3 PC							|
+     In fisierul "bmp_header.h" sunt definite cele 2 structuri din fisierele BMP.
+     Functia "main" apeleaza functia citire. Atat.
+     Functia "citire" - deschide fisierul de input;
+	-citeste numele fisierului BMP de input pt task 1;
+	-citeste codul culorii pentru task 1 (b,g,r);
+	-creeaza denumirile fisierelor de output pt fiecare task;
+	-in WHILE, citeste numerele ce vor fi sterse in task 3;
+	-sunt definite pointerele pentru BMP de intrare si cele 2 BMP de iesire;
+	-este creata calea relativa pentru BMP-ul de input;
+	-sunt deschise pt citire sau scriere cele 3 BMP-uri;
+	-este citit FileHeader-ul pt. BMP de intrare si copiat in BMP de iesire;
+	-este citit InfoHeader-ul pt. BMP de intrare si copiat in BMP de iesire;
+	-se sare in BMP de intrare la locul unde incepe matricea de pixeli;
+	-se calculeaza padding-ul BMP-urilor;
+	-se aloca memorie pentru citirea matricii de pixeli, cu tot cu padding;
+	-se citeste matricea de pixeli;
+	-se apeleaza functia "task1" si apoi "scriere" => s-a executat task1;
+	-se apeleaza functia "task2" => s-a executat task2;
+	-se elibereaza memoria pentru matricea de pixeli si se citeste din nou;
+	(pentru ca in task1 am modificat culorile cifrelor, iar in task3 
+	acestea nu trebuie modificate, asa ca nu putem folosi aceeasi matrice)
+	-se apeleaza functia "task3" => s-a executat task3;
+	-se inchid toate fisierele de intrare/iesire;
+	-se elibereaza memoria.
+     Functia "task1" - modifica culorile cifrelor;
+	-nu parcurge si sectiunea de padding, aceasta se sare;
+	-selecteaza pixelii diferiti de fundal si le atribuie culoarea ceruta;
+	Urmeaza functia "scriere", care scrie octet cu octet (inclusiv padding)
+	matricea de pixeli in BMP-ul de output pentru task1;
+	=> s-a executat task1.
+     Functia "task2" - cauta pixelul din coltul stanga-sus al unei cifre;
+	-deschide si creeaza fisierul .txt de output;
+	-cauta un pixel care imediat deasupra si in stanga nu are alt pixel;
+	(desi cifre precum 4 au mai multi astfel de pixel, se reduce totusi
+	numarul de pixeli care pot fi colt, se reduce numarul de apelari ale
+	functiei "recunoaste"; este mai eficient decat sa se verifice fiecare
+	pixel la rand daca este coltul stanga-sus al unei cifre, sunt mai
+	putine cazuri testate)
+	-se observa ca pentru cifra 1 cautarea este altfel: coltul cautat este
+	alb, asa ca pentru fiecare pixel alb, verific daca inca 3 pixeli din dreapta
+	sunt albi si al 4lea colorat;
+	(si asta reduce numarul de cazuri testate)
+	-se apeleaza functia "recunoaste", ce primeste ca argument pozitia posibila
+	a coltului;
+	-se inchide fisierul de iesire;
+     Functia "recunoaste" - identifica cifra din poza care incepe de la "colt";
+	-se stabileste latimea matricii de pixeli (nr octetilor cu tot cu padding);
+	-practic se verifica fiecare posibilitate in parte, pana se gaseste una;
+	-considerand "colt" pixelul stanga-sus al cifrei, verificam daca patratul
+	de dimensiune 5x5 pixeli cu coltul stanga-sus de pozitie "colt" are 
+	formatul corespunzator;
+	-se verifica doar primul octet pt fiecare pixel(este de ajuns);
+	OBSERVATIE: acest pixel nu va fi niciodata 255 (am verificat in teste);
+	OBSERVATIE: pentru cifra 1, din cauza formei ei aparte, am verificat
+	si daca dupa ea este o coloana de pixeli liberi, pentru a nu se considera,
+	de exemplu, prima coloana a cifrei 0 ca fiind de fapt cifra 1;
+	-daca se gaseste o corespondenta, aceasta este trecuta in fisierul de 
+	output pentru task2, vectorul "colturi" memoreaza colturile stanga-sus
+	ale cifrelor (va folosi la task3), variabila globala "x" ia valoarea
+	cifrei identificate (tot pentru task 3) si functia se opreste;
+	=> s-a executat task2.
+     Functia "task3 " - sterge cifrele cerute;
+	-se creeaza un fisier in care va fi trecut outputul functiei apelate
+	"recunoaste", datorita implementarii acesteia, pentru a evita crearea
+	unei alte functii aproape identice, dar care nu printeaza intr-un fisier;
+	-se stabileste latimea (nr de octeti) ai matricii de pixeli cu tot cu
+	padding;
+	-se parcurge vectorul care a retinut in ordine colturile cifrelor;
+	-daca cifra care incepe cu un colt memorat in vector face parte din cele
+	care trebuie sterse, se apeleaza functia "mutare", care muta toata cifrele
+	incepand cu urmatoarea dupa cea identificata cu o pozitie la stanga, iar
+	apoi functia "stergere", care sterge ultima cifra;
+	-procesul se repeta pana cand nu mai sunt cifre de sters;
+	-se apeleaza "scriere", pentru a scrie BMP-ul pt task3;
+	-se inchide fisierul de dump pt task 3;
+	=> s-a executat task3.
+	
